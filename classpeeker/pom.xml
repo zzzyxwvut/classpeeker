@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.zzzyxwvut</groupId>
+    <artifactId>classpeeker</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <description>An inspector of classes.</description>
+
+    <properties>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+	<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+	<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+	<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+
+	<commons-cli.version>1.4</commons-cli.version>
+	<junit.jupiter.version>5.7.0</junit.jupiter.version>
+    </properties>
+
+    <dependencies>
+	<dependency>
+	    <groupId>commons-cli</groupId>
+	    <artifactId>commons-cli</artifactId>
+	    <version>${commons-cli.version}</version>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter</artifactId>
+	    <version>${junit.jupiter.version}</version>
+	    <scope>test</scope>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-api</artifactId>
+	    <version>${junit.jupiter.version}</version>
+	    <scope>test</scope>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-engine</artifactId>
+	    <version>${junit.jupiter.version}</version>
+	    <scope>test</scope>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-params</artifactId>
+	    <version>${junit.jupiter.version}</version>
+	    <scope>test</scope>
+	</dependency>
+    </dependencies>
+
+    <build>
+	<plugins>
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<version>${maven-compiler-plugin.version}</version>
+		<configuration>
+		    <encoding>UTF-8</encoding>
+		    <release>11</release>
+		    <showDeprecation>true</showDeprecation>
+		    <showWarnings>true</showWarnings>
+		    <verbose>false</verbose>
+		    <compilerArgs>
+			<arg>-g</arg>
+			<!-- JLS-11, $5.1.1. -->
+			<arg>-Xlint:all,-cast</arg>
+			<arg>-Xdiags:verbose</arg>
+		    </compilerArgs>
+		</configuration>
+		<executions>
+		    <execution>
+			<id>default-compile</id>
+			<goals>
+			    <goal>compile</goal>
+			</goals>
+			<configuration>
+			    <compilerArgs combine.children="append">
+				<arg>-Xdoclint:all,-missing/private</arg>
+			    </compilerArgs>
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>default-testCompile</id>
+			<goals>
+			    <goal>testCompile</goal>
+			</goals>
+			<configuration>
+			    <compilerArgs combine.children="append">
+				<arg>-Xdoclint:all,-missing</arg>
+			    </compilerArgs>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-surefire-plugin</artifactId>
+		<version>${maven-surefire-plugin.version}</version>
+	    </plugin>
+
+	    <!-- Versions 3.1.2+ treat optionally -m <module>[/<main-class>] -->
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-jar-plugin</artifactId>
+		<version>${maven-jar-plugin.version}</version>
+	    </plugin>
+	</plugins>
+
+	<finalName>${project.artifactId}-${project.version}</finalName>
+    </build>
+</project>
