@@ -18,6 +18,7 @@
 
 	<commons-cli.version>1.4</commons-cli.version>
 	<junit.jupiter.version>5.7.0</junit.jupiter.version>
+	<impedimenta.version>1.0-SNAPSHOT</impedimenta.version>
     </properties>
 
     <dependencies>
@@ -25,6 +26,17 @@
 	    <groupId>commons-cli</groupId>
 	    <artifactId>commons-cli</artifactId>
 	    <version>${commons-cli.version}</version>
+	</dependency>
+
+	<!--
+	    impedimenta should be cloned and locally installed from:
+	    https://bitbucket.org/zzzyxwvut/impedimenta.git
+	-->
+	<dependency>
+	    <groupId>org.zzzyxwvut</groupId>
+	    <artifactId>impedimenta</artifactId>
+	    <version>${impedimenta.version}</version>
+	    <optional>true</optional>
 	</dependency>
 
 	<dependency>
