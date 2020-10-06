@@ -1,6 +1,12 @@
 package org.zzzyxwvut.classpeeker.internal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
@@ -109,17 +116,14 @@ class OptionParser
 	 *
 	 * @return a map of parsed options with their values, if any
 	 */
-	Map<LauncherOption, Optional<String>> options()
-	{
-		return options;
-	}
+	Map<LauncherOption, Optional<String>> options()	{ return options; }
 
 	/**
 	 * Returns a list of parsed class names, if any.
 	 *
 	 * @return a list of parsed class names, if any
 	 */
-	List<String> classNames()		{ return classNames; }
+	List<String> classNames()			{ return classNames; }
 
 	/**
 	 * Delivers the help message.
@@ -131,31 +135,37 @@ class OptionParser
 	{
 		Objects.requireNonNull(writer, "writer");
 		Objects.requireNonNull(klass, "klass");
-		final String className = klass.getPackage().getName();
+		fetchProperties(klass);
 		final String padding = "    ";		/* 4 SPACEs (0x20). */
 		final String cmdLineSyntax = String.format(
-			"java -jar target/%s*-jar-with-dependencies*.jar",
-			className.substring(className.lastIndexOf('.') + 1));
+			"java -jar $(find ~/.m2/repository/%1$s/ -name \\"
+			+ "%n%2$s)",
+			System.getProperty("classpeeker.group", "")
+				.replace('.', '/'),
+			System.getProperty("classpeeker.bundle.jar",
+						"classpeeker-bundle.jar"));
 		final String header = String.format(
-				"%1$s%<s[fully.qualified.ClassName |"
-			+ " fully/qualified/ClassName[.class] ...]"
-			+ "%nAn inspector of classes."
+				"%1$s%<s[fully.qualified.ClassName "
+				+ "fully/qualified/ClassName[.class] ...]"
+			+ "%n%nAn inspector of classes."
 			+ "%n%nOptions:", padding);
 		final String footer = String.format("%nExamples:"
-			+ "%n%1$sjava -cp target/classes/:"
-			+ "$(find ~/.m2/repository/commons-cli -type f \\"
-			+ "%n-name commons-cli-1.4.jar -printf %%p:) %3$s \\"
-			+ "%n$(find target/classes -type f -name [^m]\\*.class"
-			+ " -printf %%P\\ )"
-			+ "%n%n%1$s%2$s -%4$s /tmp/URI.txt \\"
-			+ "%njava.net.URI java.net.URI\\$1 java.net.URI\\$Parser"
+			+ "%n%1$sjava -cp $(%2$s) %3$s \\"
+			+ "%norg.apache.commons.cli.HelpFormatter"
+			+ "%n%n%1$s%4$s \\"
+			+ "%n\\[\\[B void"
+			+ "%n%n%1$s%4$s \\"
+			+ "%n-%5$s /tmp/URI.txt java.net.URI java.net.URI\\$1 "
+				+ "java.net.URI\\$Parser"
 			+ "%n%n%1$smkdir /tmp/jdk-11 &&"
-			+ "%n%1$stime %2$s \\"
-			+ "%n-%5$s%6$s%7$s /tmp/jdk-11"
-			+ " -%8$s \"${OPENJDK:?}\"/jdk-11/lib/classlist",
+			+ "%n%1$stime %4$s \\"
+			+ "%n-%6$s%7$s%8$s /tmp/jdk-11 -%9$s "
+				+ "\"${OPENJDK:?}\"/lib/classlist",
 			padding,
-			cmdLineSyntax,
+			String.format(System.getProperty(
+					"classpeeker.example-1.find", ":")),
 			klass.getName(),
+			cmdLineSyntax,
 			LauncherOption.SINGLE.shortName(),
 			LauncherOption.ABORT_ON_ERROR.shortName(),
 			LauncherOption.CONCURRENT.shortName(),
@@ -165,8 +175,36 @@ class OptionParser
 		formatter.setArgName("FILENAME");
 		formatter.setSyntaxPrefix(String.format("Usage:%n%s", padding));
 		formatter.printHelp(writer, 80, cmdLineSyntax, header,
-					OPTIONS, 4, 4, footer, true);
+						OPTIONS, 4, 4, footer, true);
 		writer.flush();
+	}
+
+	private static void fetchProperties(Class<?> klass)
+	{
+		final String resourceName = "/application.properties";
+
+		try (InputStream is = klass.getResourceAsStream(
+							resourceName)) {
+			if (is == null)
+				throw new IllegalArgumentException(
+					String.format(
+						"Unavailable resource: '%s'",
+						resourceName));
+
+			try (InputStreamReader isr = new InputStreamReader(is,
+						StandardCharsets.UTF_8);
+					BufferedReader br =
+						new BufferedReader(isr)) {
+				final Properties props = new Properties();
+				props.load(br);
+
+				for (String name : props.stringPropertyNames())
+					System.setProperty(name,
+						props.getProperty(name));
+			}
+		} catch (final IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	/** The options supported by an entry point class. */
