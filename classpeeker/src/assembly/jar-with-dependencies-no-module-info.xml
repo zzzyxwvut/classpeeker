@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <!--
+	See https://maven.apache.org/plugins/maven-assembly-plugin/assembly.html
+	See https://maven.apache.org/plugins/maven-assembly-plugin/advanced-descriptor-topics.html
+	See https://maven.apache.org/plugin-developers/cookbook/generate-assembly.html
+	See https://maven.apache.org/guides/mini/guide-assemblies.html
+    -->
+
+    <!--
+	Sets the id of this assembly. Also the id is used as the artifact's
+	classifier when deploying.
+    -->
+    <id>jar-with-dependencies-no-module-info</id>
+
+    <formats>
+	<format>jar</format>
+    </formats>
+
+    <!-- Does not include a base (root) directory in the final archive. -->
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <!--
+    <baseDirectory/>
+    <includeSiteDirectory/>
+    -->
+
+    <!--
+	Set of components which filter various container descriptors out of
+	the normal archive stream, so they can be aggregated then added.
+    <containerDescriptorHandlers>
+	<containerDescriptorHandler>
+	    <handlerName/>
+	    <configuration/>
+	</containerDescriptorHandler>
+    </containerDescriptorHandlers>
+    -->
+
+    <!--
+	The {includes,excludes} elements of moduleSet take a string of
+	the groupId:artifactId:type:classifier coordinates.
+    -->
+    <!--
+	(#3) Specifies which module files to include in the assembly.
+    <moduleSets>
+	<moduleSet>
+	    <useAllReactorProjects/>
+	    <includeSubModules/>
+	    <includes/>
+	    <excludes/>
+	    <sources>
+		<useDefaultExcludes/>
+		<outputDirectory/>
+		<includes/>
+		<excludes/>
+		<fileMode/>
+		<directoryMode/>
+		<fileSets>
+		    <fileSet>
+			<useDefaultExcludes/>
+			<outputDirectory/>
+			<includes/>
+			<excludes/>
+			<fileMode/>
+			<directoryMode/>
+			<directory/>
+			<lineEnding/>
+			<filtered/>
+		    </fileSet>
+		</fileSets>
+		<includeModuleDirectory/>
+		<excludeSubModuleDirectories/>
+		<outputDirectoryMapping/>
+	    </sources>
+	    <binaries>
+		<outputDirectory/>
+		<includes/>
+		<excludes/>
+		<fileMode/>
+		<directoryMode/>
+		<attachmentClassifier/>
+		<includeDependencies/>
+		<dependencySets>
+		    <dependencySet>
+			<outputDirectory/>
+			<includes/>
+			<excludes/>
+			<fileMode/>
+			<directoryMode/>
+			<useStrictFiltering/>
+			<outputFileNameMapping/>
+			<unpack/>
+			<unpackOptions>
+			    <includes/>
+			    <excludes/>
+			    <filtered/>
+			    <lineEnding/>
+			    <useDefaultExcludes/>
+			    <encoding/>
+			</unpackOptions>
+			<scope/>
+			<useProjectArtifact/>
+			<useProjectAttachments/>
+			<useTransitiveDependencies/>
+			<useTransitiveFiltering/>
+		    </dependencySet>
+		</dependencySets>
+		<unpack/>
+		<unpackOptions>
+		    <includes/>
+		    <excludes/>
+		    <filtered/>
+		    <lineEnding/>
+		    <useDefaultExcludes/>
+		    <encoding/>
+		</unpackOptions>
+		<outputFileNameMapping/>
+	    </binaries>
+	</moduleSet>
+    </moduleSets>
+    -->
+
+    <!--
+	(#2) Specifies which groups of files to include in the assembly.
+    <fileSets>
+	<fileSet>
+	    <useDefaultExcludes/>
+	    <outputDirectory/>
+	    <includes/>
+	    <excludes/>
+	    <fileMode/>
+	    <directoryMode/>
+	    <directory/>
+	    <lineEnding/>
+	    <filtered/>
+	    <nonFilteredFileExtensions/>
+	</fileSet>
+    </fileSets>
+    -->
+
+    <!--
+	(#1) Specifies which single files to include in the assembly.
+    -->
+    <files>
+	<file>
+	    <!--
+	    <outputDirectory/>
+	    <destName/>
+	    <fileMode/>
+	    <lineEnding/>
+	    -->
+	    <source>src/main/resources/application.properties</source>
+	    <filtered>true</filtered>
+	</file>
+    </files>
+
+    <!--
+	The {includes,excludes} elements of dependencySet take a string of
+	the groupId:artifactId:type:classifier coordinates.
+    -->
+    <!--
+	(#4) Specifies which dependencies to include in the assembly.
+    -->
+    <dependencySets>
+	<dependencySet>
+	    <outputDirectory>.</outputDirectory>
+	    <excludes>
+		<!-- Direct and transitive test dependencies. -->
+		<exclude>org.zzzyxwvut:impedimenta</exclude>
+		<exclude>org.zzzyxwvut:julics-core</exclude>
+		<exclude>org.zzzyxwvut:julics-naming</exclude>
+	    </excludes>
+	    <!--
+	    <includes/>
+	    <fileMode/>
+	    <directoryMode/>
+	    <useStrictFiltering/>
+	    <outputFileNameMapping/>
+	    -->
+	    <unpack>true</unpack>
+	    <unpackOptions>
+		<excludes>
+		    <exclude>**/module-info.class</exclude>
+		</excludes>
+	    <!--
+		<includes/>
+		<filtered/>
+		<lineEnding/>
+		<useDefaultExcludes/>
+		<encoding/>
+	    -->
+	    </unpackOptions>
+	    <scope>runtime</scope>
+	    <!--
+		Adds _this project_ to the dependency set, subject to
+		the pecking order (#4), so that during the unpacking phase
+		the files matching the exclusion pattern may be dropped.
+		(http://maven.apache.org/plugins/maven-assembly-plugin/advanced-descriptor-topics.html)
+	    -->
+	    <useProjectArtifact>true</useProjectArtifact>
+	    <!--
+	    <useProjectAttachments/>
+	    <useTransitiveDependencies/>
+	    <useTransitiveFiltering/>
+	    -->
+	</dependencySet>
+    </dependencySets>
+
+    <!--
+	(#5) Specifies which repository files to include in the assembly.
+    <repositories>
+	<repository>
+	    <outputDirectory/>
+	    <includes/>
+	    <excludes/>
+	    <fileMode/>
+	    <directoryMode/>
+	    <includeMetadata/>
+	    <groupVersionAlignments>
+		<groupVersionAlignment>
+		    <id/>
+		    <version/>
+		    <excludes/>
+		</groupVersionAlignment>
+	    </groupVersionAlignments>
+	    <scope/>
+	</repository>
+    </repositories>
+    -->
+
+    <!--
+	Specifies the shared components xml file locations to include in
+	the assembly. The locations specified must be relative to the base
+	location of the descriptor: <descriptorRef/> elements are
+	classpath-bound, <descriptor/> elements are interpreted as a path
+	relative to the project basedir.
+    <componentDescriptors/>
+    -->
+</assembly>
