@@ -5,4 +5,6 @@ module org.zzzyxwvut.classpeeker
 	requires static org.zzzyxwvut.impedimenta;
 
 	requires transitive commons.cli;
+
+	exports org.zzzyxwvut.classpeeker;
 }
