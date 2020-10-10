@@ -15,6 +15,7 @@
 	<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 	<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 	<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+	<maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
 	<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 	<maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
 
@@ -156,6 +157,39 @@
 				</manifest>
 			    </archive>
 			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-resources-plugin</artifactId>
+		<version>${maven-resources-plugin.version}</version>
+		<executions>
+		    <execution>
+			<id>bespoke-resources</id>
+			<phase>package</phase>
+			<goals>
+			    <goal>resources</goal>
+			</goals>
+			<configuration>
+			    <propertiesEncoding>
+				${project.build.sourceEncoding}
+			    </propertiesEncoding>
+			    <resources>
+				<resource>
+				    <directory>src/main/resources</directory>
+				    <filtering>true</filtering>
+				</resource>
+			    </resources>
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>default-resources</id>
+			<phase>none</phase>
+			<goals>
+			    <goal>resources</goal>
+			</goals>
 		    </execution>
 		</executions>
 	    </plugin>
