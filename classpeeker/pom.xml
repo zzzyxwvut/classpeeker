@@ -14,12 +14,17 @@
 
 	<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 	<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+	<maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
 	<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 	<maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
 
 	<commons-cli.version>1.4</commons-cli.version>
 	<junit.jupiter.version>5.7.0</junit.jupiter.version>
 	<impedimenta.version>1.0-SNAPSHOT</impedimenta.version>
+
+	<classpeeker.assembly>
+	    jar-with-dependencies-no-module-info
+	</classpeeker.assembly>
     </properties>
 
     <dependencies>
@@ -123,6 +128,36 @@
 			<exclude>%regex[.+IntegrationTests??.class]</exclude>
 		    </excludes>
 		</configuration>
+	    </plugin>
+
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<version>${maven-assembly-plugin.version}</version>
+		<executions>
+		    <execution>
+			<id>${classpeeker.assembly}</id>
+			<phase>package</phase>
+			<goals>
+			    <goal>single</goal>
+			</goals>
+			<configuration>
+			    <descriptors>
+				<descriptor>
+				    src/assembly/${classpeeker.assembly}.xml
+				</descriptor>
+			    </descriptors>
+			    <archive>
+				<addMavenDescriptor>true</addMavenDescriptor>
+				<manifest>
+				    <mainClass>
+					org.zzzyxwvut.classpeeker.BasicLauncher
+				    </mainClass>
+				</manifest>
+			    </archive>
+			</configuration>
+		    </execution>
+		</executions>
 	    </plugin>
 
 	    <!-- Versions 3.1.2+ treat optionally -m <module>[/<main-class>] -->
