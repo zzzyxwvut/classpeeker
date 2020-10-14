@@ -182,6 +182,7 @@ class OptionParser
 	private static void fetchProperties(Class<?> klass)
 	{
 		final String resourceName = "/application.properties";
+		final Properties props;
 
 		try (InputStream is = klass.getResourceAsStream(
 							resourceName)) {
@@ -195,16 +196,15 @@ class OptionParser
 						StandardCharsets.UTF_8);
 					BufferedReader br =
 						new BufferedReader(isr)) {
-				final Properties props = new Properties();
+				props = new Properties();
 				props.load(br);
-
-				for (String name : props.stringPropertyNames())
-					System.setProperty(name,
-						props.getProperty(name));
 			}
 		} catch (final IOException e) {
 			throw new UncheckedIOException(e);
 		}
+
+		for (String name : props.stringPropertyNames())
+			System.setProperty(name, props.getProperty(name));
 	}
 
 	/** The options supported by an entry point class. */
