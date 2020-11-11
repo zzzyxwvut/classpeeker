@@ -74,7 +74,7 @@ public class ClassPeekerTests
 		assertTrue(result.get(3) instanceof Failure);
 		final Exception e = ((Failure) result.get(3)).exception();
 		assertTrue(e instanceof UnsupportedOperationException);
-		assertTrue(e.getMessage().equals("Oops!"));
+		assertTrue("Oops!".equals(e.getMessage()));
 	}
 
 	@Test
