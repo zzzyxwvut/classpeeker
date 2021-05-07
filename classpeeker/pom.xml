@@ -214,6 +214,11 @@
 			<goals>
 			    <goal>jar</goal>
 			</goals>
+			<configuration>
+			    <archive>
+				<addMavenDescriptor>true</addMavenDescriptor>
+			    </archive>
+			</configuration>
 		    </execution>
 		    <execution>
 			<id>default-jar</id>

@@ -150,7 +150,33 @@
 	    <fileMode/>
 	    <lineEnding/>
 	    -->
-	    <source>src/main/resources/application.properties</source>
+	    <source>${basedir}/src/main/resources/application.properties</source>
+	    <filtered>true</filtered>
+	</file>
+	<file>
+	    <source>${basedir}/src/main/resources/META-INF/LICENSE</source>
+	    <destName>PROJECT_LICENSE</destName>
+	    <outputDirectory>META-INF</outputDirectory>
+	</file>
+
+	<!--
+	    The addMavenDescriptor setting of maven-archiver is ignored.
+	    (See https://issues.apache.org/jira/browse/MASSEMBLY-835)
+	-->
+	<file>
+	    <source>${basedir}/pom.xml</source>
+	    <outputDirectory>
+		META-INF/maven/${project.groupId}/${project.artifactId}
+	    </outputDirectory>
+	</file>
+	<!--
+	    See https://maven.apache.org/shared/maven-archiver/#pom-properties-content
+	-->
+	<file>
+	    <source>${basedir}/src/test/resources/pom.properties</source>
+	    <outputDirectory>
+		META-INF/maven/${project.groupId}/${project.artifactId}
+	    </outputDirectory>
 	    <filtered>true</filtered>
 	</file>
     </files>
@@ -196,7 +222,7 @@
 		Adds _this project_ to the dependency set, subject to
 		the pecking order (#4), so that during the unpacking phase
 		the files matching the exclusion pattern may be dropped.
-		(http://maven.apache.org/plugins/maven-assembly-plugin/advanced-descriptor-topics.html)
+		(https://maven.apache.org/plugins/maven-assembly-plugin/advanced-descriptor-topics.html)
 	    -->
 	    <useProjectArtifact>true</useProjectArtifact>
 	    <!--
