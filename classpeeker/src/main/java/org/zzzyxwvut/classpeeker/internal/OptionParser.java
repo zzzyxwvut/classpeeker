@@ -8,7 +8,8 @@ import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -97,9 +98,11 @@ class OptionParser
 	private static Map<LauncherOption, Optional<String>> parse(
 					Iterator<Option> optionIterator)
 	{
-		return Map.copyOf(StreamSupport
-			.stream(Spliterators.spliterator(optionIterator, 0,
-				Spliterator.IMMUTABLE | Spliterator.NONNULL),
+		return Collections.unmodifiableMap(StreamSupport
+			.stream(Spliterators.spliterator(
+					optionIterator,
+					0,
+					Spliterator.IMMUTABLE | Spliterator.NONNULL),
 				false)
 			.collect(Collectors.toMap(
 				option -> LauncherOption.fromString(
@@ -108,7 +111,7 @@ class OptionParser
 				option -> Optional.ofNullable(
 							option.getValue()),
 				(oldValue, newValue) -> newValue,
-				HashMap::new)));
+				() -> new EnumMap<>(LauncherOption.class))));
 	}
 
 	/**
@@ -242,9 +245,10 @@ class OptionParser
 		WRITE_TO("w", "write-to-directory", true,
 			"Write EACH class data to a NEW file");
 
-		private static final Map<String, LauncherOption> NAMES =
-						Arrays.stream(values())
-			.collect(Collectors.toMap(LauncherOption::shortName,
+		private static final Map<String, LauncherOption> NAMES = Arrays
+			.stream(values())
+			.collect(Collectors.toUnmodifiableMap(
+						LauncherOption::shortName,
 						Function.identity()));
 
 		private final String shortName;

@@ -11,6 +11,7 @@ import static org.zzzyxwvut.classpeeker.internal.OptionParser.LauncherOption.REA
 import static org.zzzyxwvut.classpeeker.internal.OptionParser.LauncherOption.SINGLE;
 import static org.zzzyxwvut.classpeeker.internal.OptionParser.LauncherOption.WRITE_TO;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class OptionParserTests
 			"-".concat(READ_FROM.shortName()),
 			"barFile"
 		});
-		final Set<LauncherOption> expected = Set.of(READ_FROM);
+		final Set<LauncherOption> expected = EnumSet.of(READ_FROM);
 		final Map<LauncherOption, Optional<String>> options =
 							optionParser.options();
 		final String readFromFile = options.get(READ_FROM)
@@ -88,7 +89,7 @@ public class OptionParserTests
 			"-".concat(READ_FROM.shortName()),
 			"barFile"
 		});
-		final Set<LauncherOption> expected = Set.of(
+		final Set<LauncherOption> expected = EnumSet.of(
 			ABORT_ON_ERROR, CONCURRENT, READ_FROM, WRITE_TO);
 		final Map<LauncherOption, Optional<String>> options =
 						optionParser.options();
